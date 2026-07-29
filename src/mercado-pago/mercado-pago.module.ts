@@ -5,11 +5,15 @@ import { MercadoPagoService } from './mercado-pago.service';
 import { CreateSubscriptionUseCase } from './use-case/create-subscription.use-case';
 import { MercadoPagoController } from './mercado-pago.controller';
 import { ProcessPaymentWebhookUseCase } from './use-case/process-payment-webhook.use-case';
+import { PaymentsModule } from '../payments/payments.module';
+import { WebhookEventsModule } from '../webhook-events/webhook-events.module';
 
     @Module({
     imports: [
-        ConfigModule,
-        ClientsModule,
+    ConfigModule,
+    ClientsModule,
+    PaymentsModule,
+    WebhookEventsModule,
     ],
     controllers: [
         MercadoPagoController,

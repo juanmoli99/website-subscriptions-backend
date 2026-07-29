@@ -16,22 +16,26 @@ export class MercadoPagoController {
     private readonly processPaymentWebhookUseCase: ProcessPaymentWebhookUseCase,
   ) {}
 
-  @Post('webhook')
-  async webhook(
+    @Post('webhook')
+    async webhook(
     @Body() body: any,
-  ) {
+    ) {
     const paymentId = body?.data?.id;
+    const eventId = body?.id;
+    const eventType = body?.type;
 
     if (!paymentId) {
-      return {
+        return {
         message: 'Webhook recibido sin payment id.',
-      };
+        };
     }
 
     return this.processPaymentWebhookUseCase.execute(
-      paymentId,
+        paymentId,
+        eventId,
+        eventType,
     );
-  }
+    }
 
   @UseGuards(JwtAuthGuard)
   @Post('subscription/:clientId')
