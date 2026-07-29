@@ -22,18 +22,15 @@ export class CreateSubscriptionUseCase {
         'Cliente no encontrado.',
       );
     }
+    const frontendUrl =
+    this.configService.get<string>('FRONTEND_URL') ??
+    'https://www.google.com';
+
+    console.log('FRONTEND_URL:', frontendUrl);
 
     const preApproval =
       this.mercadoPagoService.getPreApproval();
 
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL');
-
-    if (!frontendUrl) {
-      throw new Error(
-        'La variable FRONTEND_URL no está definida.',
-      );
-    }
 
     const subscription = await preApproval.create({
       body: {
@@ -49,6 +46,18 @@ export class CreateSubscriptionUseCase {
         back_url: frontendUrl,
       },
     });
+
+    if (!subscription.id || !subscription.init_point) {
+        throw new Error(
+            'Mercado Pago no devolvió los datos de suscripción necesarios.',
+        );
+    }
+
+    await this.clientsRepository.updateMercadoPagoSubscription(
+    client.id,
+    subscription.id,
+    subscription.init_point,
+    );
 
     return subscription;
   }

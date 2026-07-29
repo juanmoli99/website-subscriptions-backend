@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MercadoPagoConfig, PreApproval } from 'mercadopago';
-
+import { MercadoPagoConfig, PreApproval, Payment } from 'mercadopago';
 @Injectable()
 export class MercadoPagoService {
   private readonly client: MercadoPagoConfig;
@@ -30,4 +29,12 @@ export class MercadoPagoService {
   getPreApproval() {
     return new PreApproval(this.client);
   }
+
+    async getPayment(paymentId: string) {
+    const payment = new Payment(this.client);
+
+    return payment.get({
+        id: paymentId,
+    });
+    }
 }

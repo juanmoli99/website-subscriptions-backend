@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Param,
   Post,
@@ -6,14 +7,33 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreateSubscriptionUseCase } from './use-case/create-subscription.use-case';
+import { ProcessPaymentWebhookUseCase } from './use-case/process-payment-webhook.use-case';
 
 @Controller('mercado-pago')
-@UseGuards(JwtAuthGuard)
 export class MercadoPagoController {
   constructor(
     private readonly createSubscriptionUseCase: CreateSubscriptionUseCase,
+    private readonly processPaymentWebhookUseCase: ProcessPaymentWebhookUseCase,
   ) {}
 
+  @Post('webhook')
+  async webhook(
+    @Body() body: any,
+  ) {
+    const paymentId = body?.data?.id;
+
+    if (!paymentId) {
+      return {
+        message: 'Webhook recibido sin payment id.',
+      };
+    }
+
+    return this.processPaymentWebhookUseCase.execute(
+      paymentId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('subscription/:clientId')
   async createSubscription(
     @Param('clientId') clientId: string,

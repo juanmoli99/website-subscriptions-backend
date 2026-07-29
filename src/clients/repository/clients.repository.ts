@@ -82,4 +82,38 @@ export class ClientsRepository {
       },
     });
   }
+
+  async updateMercadoPagoSubscription(
+    id: string,
+    mercadoPagoSubscriptionId: string,
+    mercadoPagoSubscriptionUrl: string,
+  ) {
+    return this.prisma.client.update({
+      where: {
+        id,
+      },
+      data: {
+        mercadoPagoSubscriptionId,
+        mercadoPagoSubscriptionUrl,
+      },
+    });
+  }
+
+  async updatePaymentApprovedData(
+    id: string,
+    data: {
+      status: ClientStatus;
+      mercadoPagoSubscriptionStatus: string;
+      lastApprovedPaymentAt: Date;
+      nextPaymentDueAt?: Date;
+      gracePeriodEndsAt?: Date;
+    },
+  ) {
+    return this.prisma.client.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
 }
