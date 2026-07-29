@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ClientStatus {
+  PENDING
+  ACTIVE
+  PAYMENT_PENDING
+  SUSPENDED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  REFUNDED
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Client {
+  id                         String       @id @default(uuid())
+  name                       String
+  email                      String       @unique 
+  domain                     String       @unique
+  monthlyAmount              Decimal      @db.Decimal(12, 2)
+  billingDay                 Int
+  credentialHash             String       @unique
+  mercadoPagoSubscriptionId  String?      @unique
+  mercadoPagoSubscriptionUrl String?
+  mercadoPagoSubscriptionStatus String?
+  mercadoPagoSubscriptionCreatedAt DateTime?
+  status                     ClientStatus @default(PENDING)
+  lastApprovedPaymentAt      DateTime?
+  nextPaymentDueAt           DateTime?
+  gracePeriodEndsAt          DateTime?
+  createdAt                  DateTime     @default(now())
+  updatedAt                  DateTime     @updatedAt
+  payments                   Payment[]
+}
+
+model Payment {
+  id                   String        @id @default(uuid())
+  clientId             String
+  mercadoPagoPaymentId String        @unique
+  amount               Decimal       @db.Decimal(12, 2)
+  status               PaymentStatus
+  dueAt                DateTime?
+  approvedAt           DateTime?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  client               Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model WebhookEvent {
+  id                 String    @id @default(uuid())
+  mercadoPagoEventId String    @unique
+  eventType          String
+  resourceId         String?
+  processedAt        DateTime?
+  createdAt          DateTime  @default(now())
+}

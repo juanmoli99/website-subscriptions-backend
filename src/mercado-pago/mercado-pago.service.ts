@@ -1,0 +1,33 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MercadoPagoConfig, PreApproval } from 'mercadopago';
+
+@Injectable()
+export class MercadoPagoService {
+  private readonly client: MercadoPagoConfig;
+
+  constructor(
+    private readonly configService: ConfigService,
+  ) {
+    const accessToken =
+      this.configService.get<string>('MERCADO_PAGO_ACCESS_TOKEN');
+
+    if (!accessToken) {
+      throw new Error(
+        'La variable MERCADO_PAGO_ACCESS_TOKEN no está definida.',
+      );
+    }
+
+    this.client = new MercadoPagoConfig({
+      accessToken,
+    });
+  }
+
+  getClient(): MercadoPagoConfig {
+    return this.client;
+  }
+
+  getPreApproval() {
+    return new PreApproval(this.client);
+  }
+}
