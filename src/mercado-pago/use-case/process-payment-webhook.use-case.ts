@@ -11,8 +11,16 @@ export class ProcessPaymentWebhookUseCase {
   ) {}
 
   async execute(paymentId: string) {
-    const payment =
-      await this.mercadoPagoService.getPayment(paymentId);
+    let payment;
+
+    try {
+        payment =
+        await this.mercadoPagoService.getPayment(paymentId);
+    } catch (error) {
+        return {
+        message: 'Pago no encontrado.',
+        };
+    }
 
     if (payment.status !== 'approved') {
       return {
