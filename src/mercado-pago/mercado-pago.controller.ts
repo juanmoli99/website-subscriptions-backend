@@ -41,6 +41,22 @@ constructor(
         );
       }
 
+      if (eventType === 'subscription_authorized_payment') {
+        const paymentId = body?.data?.id;
+
+        if (!paymentId) {
+          return {
+            message: 'Webhook de pago de suscripción sin payment id.',
+          };
+        }
+
+        return this.processPaymentWebhookUseCase.execute(
+          paymentId,
+          eventId,
+          eventType,
+        );
+      }
+
       if (eventType === 'subscription_preapproval') {
         const subscriptionId = body?.data?.id;
 
