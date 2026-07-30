@@ -19,10 +19,14 @@ constructor(
 ) {}
 
     @Post('webhook')
-    async webhook(
-      @Body() body: any,
-    ) {
-      const eventType = body?.type;
+      async webhook(
+        @Body() body: any,
+      ) {
+         console.log(
+          'MERCADO PAGO WEBHOOK:',
+          JSON.stringify(body),
+        );
+        const eventType = body?.type;
       const eventId = body?.id;
 
       if (eventType === 'payment') {
