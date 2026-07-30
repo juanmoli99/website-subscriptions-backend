@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MercadoPagoConfig, PreApproval, Payment } from 'mercadopago';
+import {
+  MercadoPagoConfig,
+  PreApproval,
+  Payment,
+} from 'mercadopago';
+
 @Injectable()
 export class MercadoPagoService {
   private readonly client: MercadoPagoConfig;
@@ -38,6 +43,26 @@ export class MercadoPagoService {
       });
     }
 
+    async getAuthorizedPaymentById(id: string) {
+      const response = await fetch(
+        `https://api.mercadopago.com/authorized_payments/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.configService.get<string>(
+              'MERCADO_PAGO_ACCESS_TOKEN',
+            )}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Error obteniendo pago autorizado: ${response.status}`,
+        );
+      }
+
+      return response.json();
+    }
     async getSubscriptionById(id: string) {
       const preApproval = new PreApproval(this.client);
 

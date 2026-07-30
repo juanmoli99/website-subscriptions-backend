@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreateSubscriptionUseCase } from './use-case/create-subscription.use-case';
 import { ProcessPaymentWebhookUseCase } from './use-case/process-payment-webhook.use-case';
 import { ProcessSubscriptionWebhookUseCase } from './use-case/process-subscription-webhook/process-subscription-webhook.use-case';
+import { ProcessSubscriptionPaymentWebhookUseCase } from './use-case/process-subscription-payment-webhook/process-subscription-payment-webhook.use-case';
 
 @Controller('mercado-pago')
 export class MercadoPagoController {
@@ -16,6 +17,7 @@ constructor(
   private readonly createSubscriptionUseCase: CreateSubscriptionUseCase,
   private readonly processPaymentWebhookUseCase: ProcessPaymentWebhookUseCase,
   private readonly processSubscriptionWebhookUseCase: ProcessSubscriptionWebhookUseCase,
+  private readonly processSubscriptionPaymentWebhookUseCase: ProcessSubscriptionPaymentWebhookUseCase,
 ) {}
 
     @Post('webhook')
@@ -46,18 +48,16 @@ constructor(
       }
 
       if (eventType === 'subscription_authorized_payment') {
-        const paymentId = body?.data?.id;
+        const authorizedPaymentId = body?.data?.id;
 
-        if (!paymentId) {
+        if (!authorizedPaymentId) {
           return {
-            message: 'Webhook de pago de suscripción sin payment id.',
+            message: 'Webhook de pago autorizado sin id.',
           };
         }
 
-        return this.processPaymentWebhookUseCase.execute(
-          paymentId,
-          eventId,
-          eventType,
+        return this.processSubscriptionPaymentWebhookUseCase.execute(
+          authorizedPaymentId,
         );
       }
 

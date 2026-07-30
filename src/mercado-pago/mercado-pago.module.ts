@@ -8,6 +8,7 @@ import { ProcessPaymentWebhookUseCase } from './use-case/process-payment-webhook
 import { PaymentsModule } from '../payments/payments.module';
 import { WebhookEventsModule } from '../webhook-events/webhook-events.module';
 import { ProcessSubscriptionWebhookUseCase } from './use-case/process-subscription-webhook/process-subscription-webhook.use-case';
+import { ProcessSubscriptionPaymentWebhookUseCase } from './use-case/process-subscription-payment-webhook/process-subscription-payment-webhook.use-case';
 
     @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ProcessSubscriptionWebhookUseCase } from './use-case/process-subscripti
     CreateSubscriptionUseCase,
     ProcessPaymentWebhookUseCase,
     ProcessSubscriptionWebhookUseCase,
+    ProcessSubscriptionPaymentWebhookUseCase,
     ],
     exports: [
         MercadoPagoService,
