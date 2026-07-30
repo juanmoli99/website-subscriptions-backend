@@ -30,19 +30,28 @@ export class MercadoPagoService {
     return new PreApproval(this.client);
   }
 
-  async getPreApprovalById(id: string) {
-    const preApproval = new PreApproval(this.client);
+    async getPreApprovalById(id: string) {
+      const preApproval = new PreApproval(this.client);
 
-    return preApproval.get({
+      return preApproval.get({
+          id,
+      });
+    }
+
+    async getSubscriptionById(id: string) {
+      const preApproval = new PreApproval(this.client);
+
+      return preApproval.get({
         id,
-    });
-  }
+      });
+    }
 
     async getPayment(paymentId: string) {
-    const payment = new Payment(this.client);
+      const payment = new Payment(this.client);
 
-    return payment.get({
-        id: paymentId,
-    });
+      return payment.get({
+          id: paymentId,
+      });
     }
+
 }

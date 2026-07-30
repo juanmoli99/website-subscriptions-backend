@@ -8,40 +8,64 @@ import {
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CreateSubscriptionUseCase } from './use-case/create-subscription.use-case';
 import { ProcessPaymentWebhookUseCase } from './use-case/process-payment-webhook.use-case';
+import { ProcessSubscriptionWebhookUseCase } from './use-case/process-subscription-webhook/process-subscription-webhook.use-case';
 
 @Controller('mercado-pago')
 export class MercadoPagoController {
-  constructor(
-    private readonly createSubscriptionUseCase: CreateSubscriptionUseCase,
-    private readonly processPaymentWebhookUseCase: ProcessPaymentWebhookUseCase,
-  ) {}
+constructor(
+  private readonly createSubscriptionUseCase: CreateSubscriptionUseCase,
+  private readonly processPaymentWebhookUseCase: ProcessPaymentWebhookUseCase,
+  private readonly processSubscriptionWebhookUseCase: ProcessSubscriptionWebhookUseCase,
+) {}
 
     @Post('webhook')
     async webhook(
-    @Body() body: any,
+      @Body() body: any,
     ) {
-    const paymentId = body?.data?.id;
-    const eventId = body?.id;
-    const eventType = body?.type;
+      const eventType = body?.type;
+      const eventId = body?.id;
 
-    if (!paymentId) {
-        return {
-        message: 'Webhook recibido sin payment id.',
-        };
+      if (eventType === 'payment') {
+        const paymentId = body?.data?.id;
+
+        if (!paymentId) {
+          return {
+            message: 'Webhook de pago sin payment id.',
+          };
+        }
+
+        return this.processPaymentWebhookUseCase.execute(
+          paymentId,
+          eventId,
+          eventType,
+        );
+      }
+
+      if (eventType === 'subscription_preapproval') {
+        const subscriptionId = body?.data?.id;
+
+        if (!subscriptionId) {
+          return {
+            message: 'Webhook de suscripción sin id.',
+          };
+        }
+
+        return this.processSubscriptionWebhookUseCase.execute(
+          subscriptionId,
+        );
+      }
+
+      return {
+        message: 'Evento recibido.',
+      };
     }
 
-    return this.processPaymentWebhookUseCase.execute(
-        paymentId,
-        eventId,
-        eventType,
-    );
+    @UseGuards(JwtAuthGuard)
+    @Post('subscription/:clientId')
+    async createSubscription(
+      @Param('clientId') clientId: string,
+    ) {
+      return this.createSubscriptionUseCase.execute(clientId);
     }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('subscription/:clientId')
-  async createSubscription(
-    @Param('clientId') clientId: string,
-  ) {
-    return this.createSubscriptionUseCase.execute(clientId);
-  }
 }

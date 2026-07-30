@@ -52,11 +52,27 @@ export class ProcessPaymentWebhookUseCase {
     }
 
     if (payment.status !== 'approved') {
+      const clientId =
+        payment.external_reference;
+
+      if (clientId) {
+        await this.paymentsRepository.create({
+          clientId,
+          mercadoPagoPaymentId: String(payment.id),
+          amount: payment.transaction_amount,
+          status: PaymentStatus.REJECTED,
+        });
+
+        await this.clientsRepository.updatePaymentStatus(
+          clientId,
+          ClientStatus.PAYMENT_PENDING,
+        );
+      }
+
       return {
         message: 'Pago no aprobado.',
       };
     }
-
     const clientId =
       payment.external_reference;
 

@@ -116,4 +116,29 @@ export class ClientsRepository {
       data,
     });
   }
+
+  async updatePaymentStatus(
+    id: string,
+    status: ClientStatus,
+  ) {
+    return this.prisma.client.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+  }
+
+  async findExpiredClients() {
+    return this.prisma.client.findMany({
+      where: {
+        status: ClientStatus.ACTIVE,
+        gracePeriodEndsAt: {
+          lt: new Date(),
+        },
+      },
+    });
+  }
 }
