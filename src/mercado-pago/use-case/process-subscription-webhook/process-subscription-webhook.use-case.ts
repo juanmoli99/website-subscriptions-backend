@@ -14,38 +14,49 @@ export class ProcessSubscriptionWebhookUseCase {
     let subscription;
 
     try {
-        subscription =
+      subscription =
         await this.mercadoPagoService.getSubscriptionById(
-            subscriptionId,
+          subscriptionId,
         );
     } catch (error) {
-        return {
+      return {
         message: 'Suscripción no encontrada.',
-        };
+      };
     }
 
     const clientId =
-        subscription.external_reference;
+      subscription.external_reference;
 
     if (!clientId) {
-        return {
+      return {
         message: 'La suscripción no tiene external_reference.',
-        };
+      };
     }
 
     if (subscription.status === 'cancelled') {
-        await this.clientsRepository.updateStatus(
+      await this.clientsRepository.updateStatus(
         clientId,
         ClientStatus.CANCELLED,
-        );
+      );
 
-        return {
+      return {
         message: 'Cliente cancelado correctamente.',
-        };
+      };
+    }
+
+    if (subscription.status === 'authorized') {
+      await this.clientsRepository.updateStatus(
+        clientId,
+        ClientStatus.ACTIVE,
+      );
+
+      return {
+        message: 'Cliente activado correctamente.',
+      };
     }
 
     return {
-        message: 'Estado de suscripción recibido.',
+      message: 'Estado de suscripción recibido.',
     };
-    }
+  }
 }
