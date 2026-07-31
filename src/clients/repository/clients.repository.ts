@@ -134,7 +134,7 @@ export class ClientsRepository {
   async findExpiredClients() {
     return this.prisma.client.findMany({
       where: {
-        status: ClientStatus.ACTIVE,
+        status: ClientStatus.PAYMENT_PENDING,
         gracePeriodEndsAt: {
           lt: new Date(),
         },

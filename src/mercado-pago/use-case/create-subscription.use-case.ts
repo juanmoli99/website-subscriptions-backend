@@ -23,10 +23,13 @@ export class CreateSubscriptionUseCase {
       );
     }
     const frontendUrl =
-    this.configService.get<string>('FRONTEND_URL') ??
-    'https://www.google.com';
+      this.configService.get<string>('FRONTEND_URL');
 
-    console.log('FRONTEND_URL:', frontendUrl);
+    if (!frontendUrl) {
+      throw new Error(
+        'FRONTEND_URL no está configurada.',
+      );
+    }
 
     const preApproval =
       this.mercadoPagoService.getPreApproval();
