@@ -22,6 +22,12 @@ export class CreateSubscriptionUseCase {
         'Cliente no encontrado.',
       );
     }
+
+    if (client.mercadoPagoSubscriptionId) {
+      throw new Error(
+        'El cliente ya tiene una suscripción creada.',
+      );
+    }
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL');
 
