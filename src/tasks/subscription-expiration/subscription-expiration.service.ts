@@ -22,8 +22,5 @@ export class SubscriptionExpirationService {
     }
   }
 
-  async forceCheckExpiredSubscriptions() {
-    return this.checkExpiredSubscriptions();
-  }
 
 }
