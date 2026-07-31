@@ -34,13 +34,8 @@ export class ProcessSubscriptionWebhookUseCase {
     }
 
     if (subscription.status === 'cancelled') {
-      await this.clientsRepository.updateStatus(
-        clientId,
-        ClientStatus.CANCELLED,
-      );
-
       return {
-        message: 'Cliente cancelado correctamente.',
+        message: 'Suscripción cancelada en Mercado Pago.',
       };
     }
 
