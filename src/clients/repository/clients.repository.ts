@@ -130,6 +130,20 @@ export class ClientsRepository {
       },
     });
   }
+  async updatePaymentPending(
+    id: string,
+    gracePeriodEndsAt: Date,
+  ) {
+    return this.prisma.client.update({
+      where: {
+        id,
+      },
+      data: {
+        status: ClientStatus.PAYMENT_PENDING,
+        gracePeriodEndsAt,
+      },
+    });
+  }
 
   async findExpiredClients() {
     return this.prisma.client.findMany({
