@@ -18,10 +18,18 @@ export class ProcessSubscriptionPaymentWebhookUseCase {
   async execute(
     authorizedPaymentId: string,
   ) {
-    const payment =
-      await this.mercadoPagoService.getAuthorizedPaymentById(
-        authorizedPaymentId,
-      );
+    let payment;
+
+    try {
+      payment =
+        await this.mercadoPagoService.getAuthorizedPaymentById(
+          authorizedPaymentId,
+        );
+    } catch (error) {
+      return {
+        message: 'Pago autorizado no encontrado.',
+      };
+    }
 
     const clientId =
       payment.external_reference;
