@@ -9,24 +9,44 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateClientDto {
-  @IsString()
+  @IsString({
+    message: 'El nombre es obligatorio.',
+  })
   name!: string;
 
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'El email no es válido.',
+    },
+  )
   email!: string;
 
-  @IsString()
+  @IsString({
+    message: 'El dominio es obligatorio.',
+  })
   domain!: string;
 
   @Type(() => Number)
-  @IsNumber({
-    maxDecimalPlaces: 2,
-  })
+  @IsNumber(
+    {
+      maxDecimalPlaces: 2,
+    },
+    {
+      message: 'El monto mensual debe ser un número válido.',
+    },
+  )
   monthlyAmount!: number;
 
   @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(28)
+  @IsInt({
+    message: 'El día de cobro debe ser un número entero.',
+  })
+  @Min(1, {
+    message: 'El día de cobro debe ser mayor a 0.',
+  })
+  @Max(28, {
+    message: 'El día de cobro no puede ser mayor a 28.',
+  })
   billingDay!: number;
 }
