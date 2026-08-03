@@ -36,6 +36,9 @@ export class CreateClientDto {
       message: 'El monto mensual debe ser un número válido.',
     },
   )
+  @Min(15, {
+    message: 'El monto mensual mínimo es de $15.',
+  })
   monthlyAmount!: number;
 
   @Type(() => Number)
