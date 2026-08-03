@@ -41,21 +41,27 @@ export class CreateSubscriptionUseCase {
       this.mercadoPagoService.getPreApproval();
 
 
-    const subscription = await preApproval.create({
-      body: {
-        reason: `Suscripción ${client.name}`,
-        external_reference: client.id,
-        payer_email: client.email,
-        auto_recurring: {
-          frequency: 1,
-          frequency_type: 'months',
-          transaction_amount: Number(client.monthlyAmount),
-          currency_id: 'ARS',
-        },
-        back_url: frontendUrl,
-      },
-    });
+    let subscription;
 
+    try {
+      subscription = await preApproval.create({
+        body: {
+          reason: `Suscripción ${client.name}`,
+          external_reference: client.id,
+          payer_email: client.email,
+          auto_recurring: {
+            frequency: 1,
+            frequency_type: 'months',
+            transaction_amount: Number(client.monthlyAmount),
+            currency_id: 'ARS',
+          },
+          back_url: frontendUrl,
+        },
+      });
+    } catch (error) {
+      console.log('ERROR MERCADO PAGO:', error);
+      throw error;
+    }
     if (!subscription.id || !subscription.init_point) {
         throw new Error(
             'Mercado Pago no devolvió los datos de suscripción necesarios.',
