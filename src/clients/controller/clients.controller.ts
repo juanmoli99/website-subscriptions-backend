@@ -61,4 +61,13 @@ export class ClientsController {
       updateClientStatusDto,
     );
   }
+
+  @Patch(':id/mercado-pago/subscription/clear')
+  async clearMercadoPagoSubscription(
+    @Param('id') id: string,
+  ) {
+    return this.clientsService.clearMercadoPagoSubscription(
+      id,
+    );
+  }
 }

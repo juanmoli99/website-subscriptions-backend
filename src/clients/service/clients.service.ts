@@ -7,6 +7,7 @@ import { FindAllClientsUseCase } from '../use-case/find-all-clients.use-case';
 import { FindClientByIdUseCase } from '../use-case/find-client-by-id.use-case';
 import { UpdateClientStatusUseCase } from '../use-case/update-client-status.use-case';
 import { UpdateClientUseCase } from '../use-case/update-client.use-case';
+import { ClearMercadoPagoSubscriptionUseCase } from '../use-case/clear-mercado-pago-subscription.use-case';
 
 @Injectable()
 export class ClientsService {
@@ -16,6 +17,8 @@ export class ClientsService {
     private readonly createClientUseCase: CreateClientUseCase,
     private readonly updateClientUseCase: UpdateClientUseCase,
     private readonly updateClientStatusUseCase: UpdateClientStatusUseCase,
+    private readonly clearMercadoPagoSubscriptionUseCase: ClearMercadoPagoSubscriptionUseCase,
+
   ) {}
 
   async findAll() {
@@ -28,6 +31,10 @@ export class ClientsService {
 
   async create(createClientDto: CreateClientDto) {
     return this.createClientUseCase.execute(createClientDto);
+  }
+
+  async clearMercadoPagoSubscription(id: string) {
+    return this.clearMercadoPagoSubscriptionUseCase.execute(id);
   }
 
   async update(

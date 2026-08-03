@@ -12,6 +12,7 @@ import { UpdateClientUseCase } from './use-case/update-client.use-case';
 import { ValidateClientDomainUseCase } from './use-case/validate-client-domain.use-case';
 import { ValidateClientEmailUseCase } from './use-case/validate-client-email.use-case';
 import { ValidateUpdateClientUseCase } from './use-case/validate-update-client.use-case';
+import { ClearMercadoPagoSubscriptionUseCase } from './use-case/clear-mercado-pago-subscription.use-case';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ValidateUpdateClientUseCase } from './use-case/validate-update-client.u
     ValidateClientEmailUseCase,
     ValidateClientDomainUseCase,
     ValidateUpdateClientUseCase,
+    ClearMercadoPagoSubscriptionUseCase,
   ],
   exports: [
     ClientsRepository,

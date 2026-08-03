@@ -99,6 +99,20 @@ export class ClientsRepository {
     });
   }
 
+    async clearMercadoPagoSubscription(
+    id: string,
+    ) {
+      return this.prisma.client.update({
+        where: {
+          id,
+        },
+        data: {
+          mercadoPagoSubscriptionId: null,
+          mercadoPagoSubscriptionUrl: null,
+        },
+      });
+    }
+
   async updatePaymentApprovedData(
     id: string,
     data: {
