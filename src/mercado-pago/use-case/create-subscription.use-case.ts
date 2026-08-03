@@ -58,8 +58,16 @@ export class CreateSubscriptionUseCase {
           back_url: frontendUrl,
         },
       });
-    } catch (error) {
-      console.log('ERROR MERCADO PAGO:', error);
+    } catch (error: any) {
+      console.log(
+        'ERROR MERCADO PAGO COMPLETO:',
+        JSON.stringify(
+          error,
+          Object.getOwnPropertyNames(error),
+          2,
+        ),
+      );
+
       throw error;
     }
     if (!subscription.id || !subscription.init_point) {
